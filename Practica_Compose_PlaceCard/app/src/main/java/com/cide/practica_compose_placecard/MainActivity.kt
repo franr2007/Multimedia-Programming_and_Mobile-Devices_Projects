@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cide.practica_compose_placecard.model.Place
@@ -34,7 +36,7 @@ object PlaceRepository{
         nombreFoto = "Foto Sa Calobra",
         titulo = "Sa calobra",
         subtitulo = "Escorca -serra de Tramuntana",
-        descripcion = "descripcion ajsdjasdjfjasdfjsadjf",
+        descripcion = "Esta montaña es una de las rutas mas concurridas por los turitas en verano no se que no se cuanto",
         dificultad = "Media",
         valoracion = 4.3,
         progresso = 75.42f
@@ -54,7 +56,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PlaceCard(place: Place, modifier: Modifier = Modifier){
-    Column {
+    Column (
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+
+    ) {
         PlaceImage(place.imagen)
         PlaceHeader(place.titulo,place.subtitulo)
         PlaceDescription(place.descripcion)
@@ -81,28 +86,38 @@ fun PlaceImage (imagen: Int) {
 
 @Composable
 fun PlaceHeader(titulo: String,subtitulo: String){
-    Column {
+    Column(
+        modifier = Modifier.padding(15.dp,0.dp)
+    ) {
         Text(
-            text = titulo
+            text = titulo,
+            style = MaterialTheme.typography.headlineLarge
         )
         Text(
-            text = subtitulo
+            text = subtitulo,
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
 @Composable
 fun PlaceDescription(descripcion: String){
     Text(
-        text = descripcion
+        text = descripcion,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.padding(15.dp,0.dp),
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
 @Composable
 fun PlaceDifficulty(dificultad: String){
-    Row {
-        Text("Dificultad: ")
+    Row (
+        modifier = Modifier.padding(15.dp,0.dp)
+    ) {
         Text(
-            text = "Dificultad: $dificultad"
+            text = "Dificultad: $dificultad",
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
@@ -119,19 +134,36 @@ fun PlaceHorizontalDivider(){
 
 @Composable
 fun PlaceActions (modifier: Modifier = Modifier){
-    Row (modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(25.dp),
+    Row (
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(
+            40.dp,
+            alignment = Alignment.CenterHorizontally
+        ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Button({}) {
+        Button(
+            {},
+                shape = RoundedCornerShape(10.dp)
+            ) {
             Icon(painter = painterResource(R.drawable.ic_favorites), "favoritos")
             Spacer(modifier.width(10.dp))
-            Text("Guardar")
+            Text(
+                "Guarda",
+                style = MaterialTheme.typography.bodyLarge
+
+            )
         }
-        Button({}) {
+        Button(
+            {},
+            shape = RoundedCornerShape(10.dp)
+        ) {
             Icon(painter = painterResource(R.drawable.ic_share), "compartir")
             Spacer(modifier.width(10.dp))
-            Text("Compartir")
+            Text(
+                "Compartir",
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }

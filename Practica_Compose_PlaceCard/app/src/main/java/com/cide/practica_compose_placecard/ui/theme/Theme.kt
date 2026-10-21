@@ -52,7 +52,7 @@ fun Practica_Compose_PlaceCardTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }
