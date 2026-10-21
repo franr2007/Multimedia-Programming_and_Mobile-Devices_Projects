@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,9 +13,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,13 +25,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cide.practica_compose_placecard.model.Place
 import com.cide.practica_compose_placecard.ui.theme.Practica_Compose_PlaceCardTheme
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 
 object PlaceRepository{
     val saCalobra = Place(
@@ -37,7 +47,8 @@ object PlaceRepository{
         titulo = "Sa calobra",
         subtitulo = "Escorca -serra de Tramuntana",
         descripcion = "Esta montaña es una de las rutas mas concurridas por los turitas en verano no se que no se cuanto",
-        dificultad = "Media",
+        nombreDificultad = "Media",
+        numeroDificultad = 3,
         valoracion = 4.3,
         progresso = 75.42f
     )
@@ -63,7 +74,7 @@ fun PlaceCard(place: Place, modifier: Modifier = Modifier){
         PlaceImage(place.imagen)
         PlaceHeader(place.titulo,place.subtitulo)
         PlaceDescription(place.descripcion)
-        PlaceDifficulty(place.dificultad)
+        PlaceDifficulty(place.numeroDificultad)
         PlaceBarProgress()
         PlaceHorizontalDivider()
         PlaceActions()
@@ -91,11 +102,13 @@ fun PlaceHeader(titulo: String,subtitulo: String){
     ) {
         Text(
             text = titulo,
-            style = MaterialTheme.typography.headlineLarge
+            style = MaterialTheme.typography.headlineLarge,
+            color = colorResource(R.color.teal_700)
         )
         Text(
             text = subtitulo,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Gray
         )
     }
 }
@@ -111,14 +124,29 @@ fun PlaceDescription(descripcion: String){
 }
 
 @Composable
-fun PlaceDifficulty(dificultad: String){
+fun PlaceDifficulty(dificultad: Int, modifier: Modifier = Modifier){
     Row (
         modifier = Modifier.padding(15.dp,0.dp)
     ) {
         Text(
-            text = "Dificultad: $dificultad",
+            text = "Dificultad:",
             style = MaterialTheme.typography.bodyLarge
         )
+        val color = MaterialTheme.colorScheme.primary   // fuera del Canvas, ver aviso
+
+        Canvas(modifier = modifier.size(width = 100.dp, height = 16.dp)) {
+            val radius = size.height / 2
+            val gap = 8.dp.toPx()
+
+            repeat(5) { i ->
+                drawCircle(
+                    color = color,
+                    radius = radius,
+                    center = Offset(radius + i * (radius * 2 + gap), radius),
+                    style = if (i < dificultad) Fill else Stroke(width = 2.dp.toPx())
+                )
+            }
+        }
     }
 }
 
@@ -135,16 +163,24 @@ fun PlaceHorizontalDivider(){
 @Composable
 fun PlaceActions (modifier: Modifier = Modifier){
     Row (
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp ,0.dp),
         horizontalArrangement = Arrangement.spacedBy(
             40.dp,
             alignment = Alignment.CenterHorizontally
         ),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        //boton Guardar
         Button(
             {},
-                shape = RoundedCornerShape(10.dp)
+                Modifier.weight(0.8f),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.teal_700)
+                ),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
             Icon(painter = painterResource(R.drawable.ic_favorites), "favoritos")
             Spacer(modifier.width(10.dp))
@@ -154,9 +190,16 @@ fun PlaceActions (modifier: Modifier = Modifier){
 
             )
         }
+        //boton compartir
         Button(
             {},
-            shape = RoundedCornerShape(10.dp)
+            Modifier.weight(1f),
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = colorResource(R.color.teal_700),
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
         ) {
             Icon(painter = painterResource(R.drawable.ic_share), "compartir")
             Spacer(modifier.width(10.dp))
