@@ -5,8 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,15 +21,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -35,10 +43,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cide.practica_compose_placecard.model.Place
 import com.cide.practica_compose_placecard.ui.theme.Practica_Compose_PlaceCardTheme
-import androidx.compose.foundation.Canvas
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.Stroke
 
 object PlaceRepository{
     val saCalobra = Place(
@@ -49,8 +53,8 @@ object PlaceRepository{
         descripcion = "Esta montaña es una de las rutas mas concurridas por los turitas en verano no se que no se cuanto",
         nombreDificultad = "Media",
         numeroDificultad = 3,
-        valoracion = 4.3,
-        progresso = 75.42f
+        valoracion = 8.4,
+        progresso = 0.7f
     )
 }
 class MainActivity : ComponentActivity() {
@@ -71,32 +75,52 @@ fun PlaceCard(place: Place, modifier: Modifier = Modifier){
         verticalArrangement = Arrangement.spacedBy(20.dp),
 
     ) {
-        PlaceImage(place.imagen)
+        Box {
+            PlaceImage(place.imagen)
+            PlaceRating(place.valoracion, modifier = modifier.align(Alignment.BottomStart).padding(40.dp, 20.dp))
+        }
         PlaceHeader(place.titulo,place.subtitulo)
         PlaceDescription(place.descripcion)
-        PlaceDifficulty(place.numeroDificultad)
-        PlaceBarProgress()
+        PlaceDifficulty(place.numeroDificultad, place.nombreDificultad)
+        PlaceBarProgress(place.progresso)
         PlaceHorizontalDivider()
         PlaceActions()
     }
 }
 
 @Composable
-fun PlaceImage (imagen: Int) {
+fun PlaceImage (imagen: Int, modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(imagen),
         contentDescription = "Fotografia de la sierra de tramuntana",
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp)
-            .padding(23.dp)
+            .padding(23.dp, 50.dp, 23.dp, 10.dp)
             .clip(RoundedCornerShape(20.dp)),
         contentScale = ContentScale.Crop
     )
 }
 
 @Composable
-fun PlaceHeader(titulo: String,subtitulo: String){
+fun PlaceRating(valoracion: Double, modifier: Modifier = Modifier){
+    Box(
+        modifier = modifier
+            .size(48.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(colorResource(R.color.teal_700)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "%.1f".format(valoracion),
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+fun PlaceHeader(titulo: String,subtitulo: String, modifier: Modifier = Modifier){
     Column(
         modifier = Modifier.padding(15.dp,0.dp)
     ) {
@@ -113,7 +137,7 @@ fun PlaceHeader(titulo: String,subtitulo: String){
     }
 }
 @Composable
-fun PlaceDescription(descripcion: String){
+fun PlaceDescription(descripcion: String, modifier: Modifier = Modifier){
     Text(
         text = descripcion,
         style = MaterialTheme.typography.bodyLarge,
@@ -124,12 +148,13 @@ fun PlaceDescription(descripcion: String){
 }
 
 @Composable
-fun PlaceDifficulty(dificultad: Int, modifier: Modifier = Modifier){
+fun PlaceDifficulty(dificultad: Int, nombreDificultad: String,modifier: Modifier = Modifier){
     Row (
-        modifier = Modifier.padding(15.dp,0.dp)
+        modifier = Modifier.padding(15.dp,0.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Dificultad:",
+            text = "Dificultad: $nombreDificultad  ",
             style = MaterialTheme.typography.bodyLarge
         )
         val color = MaterialTheme.colorScheme.primary   // fuera del Canvas, ver aviso
@@ -151,13 +176,46 @@ fun PlaceDifficulty(dificultad: Int, modifier: Modifier = Modifier){
 }
 
 @Composable
-fun PlaceBarProgress(){
+fun PlaceBarProgress(progreso: Float, modifier: Modifier = Modifier) {
+    val limiteProgreso = progreso.coerceIn(0f, 1f)
 
+    Column(
+        modifier = modifier.padding(15.dp, 0.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Porcentaje de la ruta: ",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = "${(limiteProgreso * 100).toInt()}%",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
+        LinearProgressIndicator(
+            progress = { limiteProgreso },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+        )
+    }
 }
 
 @Composable
-fun PlaceHorizontalDivider(){
-
+fun PlaceHorizontalDivider(modifier: Modifier = Modifier){
+    HorizontalDivider(
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .clip(RoundedCornerShape(20.dp)),
+        thickness = 3.dp,
+        color = MaterialTheme.colorScheme.outlineVariant
+    )
 }
 
 @Composable
@@ -165,7 +223,7 @@ fun PlaceActions (modifier: Modifier = Modifier){
     Row (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp ,0.dp),
+            .padding(10.dp, 0.dp),
         horizontalArrangement = Arrangement.spacedBy(
             40.dp,
             alignment = Alignment.CenterHorizontally
@@ -191,18 +249,17 @@ fun PlaceActions (modifier: Modifier = Modifier){
             )
         }
         //boton compartir
-        Button(
-            {},
-            Modifier.weight(1f),
+        OutlinedButton(
+            onClick = {},
+            modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = colorResource(R.color.teal_700),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = colorResource(R.color.teal_700)
             ),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
         ) {
-            Icon(painter = painterResource(R.drawable.ic_share), "compartir")
-            Spacer(modifier.width(10.dp))
+            Icon(painter = painterResource(R.drawable.ic_share), contentDescription = "compartir")
+            Spacer(Modifier.width(10.dp))
             Text(
                 "Compartir",
                 style = MaterialTheme.typography.bodyLarge
