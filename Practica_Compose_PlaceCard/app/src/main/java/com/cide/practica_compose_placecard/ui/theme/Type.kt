@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.cide.practica_compose_placecard.R
 
+//Tipografia usada Nunito, archivos en  res/fonts
 val Nunito = FontFamily(
     Font(R.font.nunito_bold, FontWeight.Normal),
     Font(R.font.nunito_bold, FontWeight.Bold)

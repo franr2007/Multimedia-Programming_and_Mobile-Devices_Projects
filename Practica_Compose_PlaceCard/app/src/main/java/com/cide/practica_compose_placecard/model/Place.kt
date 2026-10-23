@@ -1,7 +1,6 @@
 package com.cide.practica_compose_placecard.model
 
-import androidx.compose.ui.graphics.painter.Painter
-
+//Clase de datos para que sea mas facil crear PlaceCards
 data class Place(
     val imagen: Int,
     val nombreFoto: String,
