@@ -9,6 +9,7 @@ data class Place(
     val subtitulo: String,
     val descripcion: String,
     val valoracion: Double,
+    val nombrePopularidad: String,
     val nombreDificultad: String,
     val numeroDificultad: Int,
     val progresso: Float

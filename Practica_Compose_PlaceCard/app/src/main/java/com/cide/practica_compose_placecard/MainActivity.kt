@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,16 +47,17 @@ import com.cide.practica_compose_placecard.model.Place
 import com.cide.practica_compose_placecard.ui.theme.Practica_Compose_PlaceCardTheme
 
 object PlaceRepository{
-    val saCalobra = Place(
-        imagen =  R.drawable.sierratramuntana,
-        nombreFoto = "Foto Sa Calobra",
-        titulo = "Sa calobra",
-        subtitulo = "Escorca -serra de Tramuntana",
-        descripcion = "Esta montaña es una de las rutas mas concurridas por los turitas en verano no se que no se cuanto",
+    val seattle = Place(
+        imagen = R.drawable.seattlefoto,
+        nombreFoto = "Foto de Seattle",
+        titulo = "Seattle",
+        subtitulo = "Washington - Estados Unidos",
+        descripcion = "Seattle destaca por sus paisajes naturales, sus rutas junto al agua y las vistas de las montañas que rodean la ciudad.",
         nombreDificultad = "Media",
         numeroDificultad = 3,
         valoracion = 8.4,
-        progresso = 0.7f
+        nombrePopularidad = "Ruta destacada",
+        progresso = 0.75f
     )
 }
 class MainActivity : ComponentActivity() {
@@ -63,7 +66,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Practica_Compose_PlaceCardTheme {
-                PlaceCard(PlaceRepository.saCalobra)
+                PlaceCard(PlaceRepository.seattle)
             }
         }
     }
@@ -73,11 +76,18 @@ class MainActivity : ComponentActivity() {
 fun PlaceCard(place: Place, modifier: Modifier = Modifier){
     Column (
         verticalArrangement = Arrangement.spacedBy(20.dp),
-
     ) {
         Box {
             PlaceImage(place.imagen)
-            PlaceRating(place.valoracion, modifier = modifier.align(Alignment.BottomStart).padding(40.dp, 20.dp))
+            PlaceRating(place.valoracion, modifier = modifier
+                .align(Alignment.BottomStart)
+                .padding(40.dp, 20.dp))
+            PlaceSuperText(place.nombreFoto, modifier = modifier
+                .align(Alignment.Center)
+                .padding(0.dp,40.dp,0.dp,0.dp))
+            PlaceNombrePopularidad(place.nombrePopularidad, modifier = modifier
+                .align(Alignment.BottomStart)
+                .padding(100.dp, 31.dp))
         }
         PlaceHeader(place.titulo,place.subtitulo)
         PlaceDescription(place.descripcion)
@@ -93,7 +103,7 @@ fun PlaceImage (imagen: Int, modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(imagen),
         contentDescription = "Fotografia de la sierra de tramuntana",
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(250.dp)
             .padding(23.dp, 50.dp, 23.dp, 10.dp)
@@ -108,21 +118,42 @@ fun PlaceRating(valoracion: Double, modifier: Modifier = Modifier){
         modifier = modifier
             .size(48.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(colorResource(R.color.teal_700)),
+            .background(colorResource(R.color.white))
+            .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp)),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = "%.1f".format(valoracion),
             style = MaterialTheme.typography.titleMedium,
-            color = Color.White
+            color = colorResource(R.color.teal_700)
         )
     }
 }
 
 @Composable
+fun PlaceSuperText(nombreFoto: String, modifier: Modifier= Modifier){
+    Text(
+        text = nombreFoto,
+        style = MaterialTheme.typography.headlineSmall,
+        color = colorResource(R.color.white),
+        modifier = modifier
+    )
+}
+
+@Composable
+fun PlaceNombrePopularidad(nombrePopularida: String, modifier: Modifier= Modifier){
+    Text(
+        text = nombrePopularida,
+        style = MaterialTheme.typography.titleMedium,
+        color = colorResource(R.color.white),
+        modifier = modifier
+    )
+}
+
+@Composable
 fun PlaceHeader(titulo: String,subtitulo: String, modifier: Modifier = Modifier){
     Column(
-        modifier = Modifier.padding(15.dp,0.dp)
+        modifier = modifier.padding(15.dp,0.dp)
     ) {
         Text(
             text = titulo,
@@ -141,7 +172,7 @@ fun PlaceDescription(descripcion: String, modifier: Modifier = Modifier){
     Text(
         text = descripcion,
         style = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier.padding(15.dp,0.dp),
+        modifier = modifier.padding(15.dp,0.dp),
         maxLines = 2,
         overflow = TextOverflow.Ellipsis
     )
@@ -150,14 +181,14 @@ fun PlaceDescription(descripcion: String, modifier: Modifier = Modifier){
 @Composable
 fun PlaceDifficulty(dificultad: Int, nombreDificultad: String,modifier: Modifier = Modifier){
     Row (
-        modifier = Modifier.padding(15.dp,0.dp),
+        modifier = modifier.padding(15.dp,0.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Dificultad: $nombreDificultad  ",
             style = MaterialTheme.typography.bodyLarge
         )
-        val color = MaterialTheme.colorScheme.primary   // fuera del Canvas, ver aviso
+        val color = MaterialTheme.colorScheme.primary
 
         Canvas(modifier = modifier.size(width = 100.dp, height = 16.dp)) {
             val radius = size.height / 2
@@ -184,7 +215,7 @@ fun PlaceBarProgress(progreso: Float, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -210,7 +241,7 @@ fun PlaceBarProgress(progreso: Float, modifier: Modifier = Modifier) {
 @Composable
 fun PlaceHorizontalDivider(modifier: Modifier = Modifier){
     HorizontalDivider(
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 15.dp)
             .clip(RoundedCornerShape(20.dp)),
         thickness = 3.dp,
@@ -220,49 +251,67 @@ fun PlaceHorizontalDivider(modifier: Modifier = Modifier){
 
 @Composable
 fun PlaceActions (modifier: Modifier = Modifier){
-    Row (
-        modifier = Modifier
+    Column (
+        modifier = modifier
             .fillMaxWidth()
             .padding(10.dp, 0.dp),
-        horizontalArrangement = Arrangement.spacedBy(
-            40.dp,
-            alignment = Alignment.CenterHorizontally
-        ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        //boton Guardar
-        Button(
-            {},
-                Modifier.weight(0.8f),
+        horizontalAlignment = Alignment.CenterHorizontally
+
+    ){
+        Row(
+            modifier = modifier.padding(0.dp,2.dp,0.dp,5.dp),
+            horizontalArrangement = Arrangement.spacedBy(
+                40.dp,
+                alignment = Alignment.CenterHorizontally
+            ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            //boton Guardar
+            Button(
+                {},
+                modifier.weight(0.8f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.teal_700)
                 ),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
-            Icon(painter = painterResource(R.drawable.ic_favorites), "favoritos")
-            Spacer(modifier.width(10.dp))
-            Text(
-                "Guarda",
-                style = MaterialTheme.typography.bodyLarge
+                Icon(painter = painterResource(R.drawable.ic_favorites), "favoritos")
+                Spacer(modifier.width(10.dp))
+                Text(
+                    "Guarda",
+                    style = MaterialTheme.typography.bodyLarge
 
-            )
+                )
+            }
+            //boton compartir
+            OutlinedButton(
+                onClick = {},
+                modifier = modifier.weight(1f),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = colorResource(R.color.teal_700)
+                ),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_share),
+                    contentDescription = "compartir"
+                )
+                Spacer(modifier.width(10.dp))
+                Text(
+                    "Compartir",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
-        //boton compartir
-        OutlinedButton(
-            onClick = {},
-            modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colorResource(R.color.teal_700)
-            ),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+        //boton mas informacion
+        TextButton(
+            {}
         ) {
-            Icon(painter = painterResource(R.drawable.ic_share), contentDescription = "compartir")
-            Spacer(Modifier.width(10.dp))
             Text(
-                "Compartir",
-                style = MaterialTheme.typography.bodyLarge
+                "Mas informacion",
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
@@ -272,6 +321,6 @@ fun PlaceActions (modifier: Modifier = Modifier){
 @Composable
 fun Preview() {
     Practica_Compose_PlaceCardTheme {
-        PlaceCard(PlaceRepository.saCalobra)
+        PlaceCard(PlaceRepository.seattle)
     }
 }
