@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -51,7 +53,7 @@ fun PlaceCard(place: Place, modifier: Modifier = Modifier){
     ) {
         //Hago un box en esta parte para poder sobre poner componentes encima de otros
         Box {
-            PlaceImage(place.imagen)
+            PlaceImage(place.listaImagenes)
             PlaceRating(place.valoracion, modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(40.dp, 20.dp))
@@ -73,17 +75,21 @@ fun PlaceCard(place: Place, modifier: Modifier = Modifier){
 
 //Componente para la imagen
 @Composable
-fun PlaceImage (imagen: Int, modifier: Modifier = Modifier) {
-    Image(
-        painter = painterResource(imagen),
-        contentDescription = "Fotografia de seattle",
-        modifier = modifier
-            .fillMaxWidth()
-            .height(250.dp)
-            .padding(23.dp, 50.dp, 23.dp, 10.dp)
-            .clip(RoundedCornerShape(20.dp)),
-        contentScale = ContentScale.Crop
-    )
+fun PlaceImage (listaImagenes: List<Int>, modifier: Modifier = Modifier) {
+    LazyRow() {
+        items(listaImagenes) {idImagen ->
+            Image(
+                painter = painterResource(idImagen),
+                contentDescription = "Fotografia de seattle",
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+                    .padding(23.dp, 50.dp, 23.dp, 10.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
 }
 
 //Componente para mostrar la valoracion

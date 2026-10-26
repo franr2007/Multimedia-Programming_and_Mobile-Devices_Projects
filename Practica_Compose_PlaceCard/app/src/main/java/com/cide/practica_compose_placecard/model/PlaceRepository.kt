@@ -1,12 +1,21 @@
 package com.cide.practica_compose_placecard.model
 
+import android.provider.MediaStore
 import com.cide.practica_compose_placecard.R
+
+val listaImagenes = listOf<Int>(
+    R.drawable.seattlefoto,
+    R.drawable.seattlefoto,
+    R.drawable.seattlefoto,
+    R.drawable.seattlefoto,
+    R.drawable.seattlefoto
+)
 
 //Repositorio para guardar distintas Place Cards
 object PlaceRepository{
     //Ejemplo de PlaceCard
     val seattle = Place(
-        imagen = R.drawable.seattlefoto,
+        listaImagenes = listaImagenes,
         nombreFoto = "Foto de Seattle",
         titulo = "Seattle",
         subtitulo = "Washington - Estados Unidos",
