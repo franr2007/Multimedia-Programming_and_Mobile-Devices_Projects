@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 
 // ------------------------------------------------------------
@@ -215,22 +214,25 @@ val activitats = listOf(
 fun ActivitatCard(activitat: Activitat) {
     Card(
         modifier = Modifier
-            .height(300.dp)
+            .height(160.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(15.dp)
     ) {
         Column(
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
             Text(
                 text = activitat.nom,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
 
-            Row(
+            Spacer(modifier = Modifier.height(15.dp))
 
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 Text(
                     text = activitat.durada,
