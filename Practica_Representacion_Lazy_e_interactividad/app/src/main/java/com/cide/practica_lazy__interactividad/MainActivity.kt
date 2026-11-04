@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -106,6 +107,7 @@ fun LlocFila(lloc: Lloc){
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                modifier = Modifier.padding(start = 7.dp),
                 text = lloc.nom,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
@@ -309,8 +311,8 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()
                 ) {
-                    //PantallaPractica1()
-                    PantallaPractica2()
+                    PantallaPractica1()
+                    //PantallaPractica2()
                 }
             }
         }
