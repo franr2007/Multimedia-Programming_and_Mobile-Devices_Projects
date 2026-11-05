@@ -15,13 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 // ------------------------------------------------------------
@@ -211,7 +213,7 @@ val activitats = listOf(
 // 3. Primera versió: GridCells.Adaptive(140.dp)
 // 4. Segona versió: GridCells.Fixed(2)
 
-//ActivitatCard
+//Composable que hace las card de Actividades
 @Composable
 fun ActivitatCard(activitat: Activitat) {
     Card(
@@ -249,11 +251,12 @@ fun ActivitatCard(activitat: Activitat) {
     }
 }
 
-//totesActivitats
+//Composable padre que le pasa las actividades a ActivitatCard
 @Composable
 fun TotesActivitats(activitats: List<Activitat>) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Adaptive(140.dp),
+        //columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -264,7 +267,7 @@ fun TotesActivitats(activitats: List<Activitat>) {
     }
 }
 
-//Pantallapractica2
+//Composable para el reto 2
 @Composable
 fun PantallaPractica2() {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -304,6 +307,68 @@ val serveis = listOf(
 // 4. Segona versió: rows = GridCells.Adaptive(100.dp)
 // 5. Recorda donar una height(...) al grid.
 
+//Composable para hacer la card de servicios
+@Composable
+fun ServeiCard(servei: Servei) {
+    Card(
+        modifier = Modifier
+            .width(170.dp)
+            .wrapContentHeight(),
+        shape = RoundedCornerShape(15.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .height(170.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = servei.nom,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(25.dp))
+
+            Text(
+                    text = servei.detall,
+                    style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+//Componente padre que le pasa un servicio al ServeiCard
+@Composable
+fun TotServeis(serveis: List<Servei>) {
+    LazyHorizontalGrid (
+        rows = GridCells.Adaptive(100.dp),
+        //rows = GridCells.Fixed(2),
+        modifier = Modifier.height(450.dp), // altura de 2 cards + espaciado
+        contentPadding = PaddingValues(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(40.dp)
+    ) {
+        items(serveis) { servei ->
+            ServeiCard(servei)
+        }
+    }
+}
+
+//Composable para el reto 3
+@Composable
+fun PantallaPractica3() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = "Servicios",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(12.dp)
+        )
+
+        TotServeis(serveis)
+    }
+}
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -311,10 +376,17 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()
                 ) {
-                    PantallaPractica1()
+                    //PantallaPractica1()
                     //PantallaPractica2()
+                    PantallaPractica3()
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun PantallaView(){
+    PantallaPractica3()
 }
