@@ -8,12 +8,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -114,28 +119,6 @@ fun ActivitatCard(
     }
 }
 
-@Composable
-fun TodasActividades(listaActividades: List<Activitat>, idElegidos: List<Int>, onCanviSeleccio: (Int) -> Unit){
-    Column {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-        ) {
-            items(listaActividades) { actividad ->
-                ActivitatCard(
-                    activitat = actividad,
-                    seleccionada = actividad.id in idElegidos,
-                    onCanviSeleccio = {
-                        onCanviSeleccio(actividad.id)
-                    }
-                )
-            }
-        }
-    }
-}
-
 // ---------- CONTRACTE RECOMANAT PER AL SWITCH ----------
 // Implementa aquest component amb Text + Switch.
 // IMPORTANT: no hi posis remember; l'estat viu a PantallaActivitats.
@@ -147,10 +130,11 @@ fun FiltreGratuites(
     onCanvi: (Boolean) -> Unit
 ) {
     Row(
-
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "Solo Gratuitas: "
+            text = "Solo Gratuitas: ",
+            style = MaterialTheme.typography.titleLarge
         )
         Switch(
             checked = activat,
@@ -176,13 +160,39 @@ fun FiltreGratuites(
 // 5. el cost total
 
 @Composable
-fun ComposableCard(){
-
+fun ElegidaCard(nombreActivitat: String){
+    Text(
+        text = nombreActivitat,
+    )
 }
 
 @Composable
-fun TotalCard(){
+fun TodasElegidas(actividadesElegidas: List<Activitat>){
 
+
+
+    Card(
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxWidth(),
+    ) {
+        LazyRow(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(actividadesElegidas) {activitad ->
+                ElegidaCard(activitad.nom)
+            }
+        }
+    }
+}
+
+@Composable
+fun TotalCard(precioTotal: Double){
+    Text(
+        text = "TOTAL: $precioTotal€"
+    )
 }
 
 //Composable para unir todos los componentes de actividad
@@ -197,7 +207,7 @@ fun PantallaActivitats(){
         mutableStateOf(listOf<Int>())
     }
 
-    fun CanviSeleccio(id: Int){
+    fun canviSeleccio(id: Int){
         idElegidos = if (id in idElegidos) {
             idElegidos - id
         }
@@ -212,25 +222,59 @@ fun PantallaActivitats(){
         activitats
     }
 
-    Column {
-        Text(
-            text = "ACTIVIDADES",
-            modifier = Modifier.padding(top = 20.dp, start = 13.dp, bottom = 10.dp),
-            style = MaterialTheme.typography.headlineLarge
-        )
-        FiltreGratuites(
-            activat = soloGratuitas,
-            onCanvi = { cambio ->
-                soloGratuitas = cambio
-            }
-        )
-        TodasActividades(
-            listaActividades = activitatsVisibles,
-            idElegidos = idElegidos,
-            onCanviSeleccio = { id ->
-                CanviSeleccio(id)
-            }
-        )
+    val actividadesElegidas = activitats.filter {
+        it.id in idElegidos
+    }
+
+    val precioTotal = actividadesElegidas.sumOf {
+        it.preu
+    }
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        verticalArrangement = Arrangement.spacedBy(15.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 10.dp, vertical = 10.dp)
+    ) {
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Text(
+                text = "ACTIVIDADES",
+                modifier = Modifier.padding(top = 20.dp),
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            FiltreGratuites(
+                activat = soloGratuitas,
+                onCanvi = { cambio -> soloGratuitas = cambio }
+            )
+        }
+
+        items(activitatsVisibles) { actividad ->
+            ActivitatCard(
+                activitat = actividad,
+                seleccionada = actividad.id in idElegidos,
+                onCanviSeleccio = { canviSeleccio(actividad.id) }
+            )
+        }
+
+        item (span = { GridItemSpan(maxLineSpan)}) {
+            Text(
+                text = "ELEGIDAS: ",
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            TodasElegidas(actividadesElegidas)
+        }
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            TotalCard(precioTotal)
+        }
     }
 }
 
