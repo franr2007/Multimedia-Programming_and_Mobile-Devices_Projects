@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.practica_sobre_el_estado.ui.theme.Practica_sobre_el_EstadoTheme
@@ -134,7 +136,9 @@ fun FiltreGratuites(
     ) {
         Text(
             text = "Solo Gratuitas: ",
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold
         )
         Switch(
             checked = activat,
@@ -161,16 +165,23 @@ fun FiltreGratuites(
 
 @Composable
 fun ElegidaCard(nombreActivitat: String){
-    Text(
-        text = nombreActivitat,
-    )
+    Card(
+        shape = RoundedCornerShape(7.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background
+        ),
+        modifier = Modifier.padding(start = 5.dp)
+    ) {
+        Text(
+            text = nombreActivitat,
+            modifier = Modifier
+                .padding(start = 5.dp, end = 5.dp)
+        )
+    }
 }
 
 @Composable
 fun TodasElegidas(actividadesElegidas: List<Activitat>){
-
-
-
     Card(
         modifier = Modifier
             .height(50.dp)
@@ -191,7 +202,10 @@ fun TodasElegidas(actividadesElegidas: List<Activitat>){
 @Composable
 fun TotalCard(precioTotal: Double){
     Text(
-        text = "TOTAL: $precioTotal€"
+        text = "TOTAL: $precioTotal€",
+        style = MaterialTheme.typography.headlineLarge,
+        color = MaterialTheme.colorScheme.primary,
+        fontWeight = FontWeight.Bold
     )
 }
 
@@ -242,7 +256,9 @@ fun PantallaActivitats(){
             Text(
                 text = "ACTIVIDADES",
                 modifier = Modifier.padding(top = 20.dp),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
             )
         }
 
@@ -264,7 +280,9 @@ fun PantallaActivitats(){
         item (span = { GridItemSpan(maxLineSpan)}) {
             Text(
                 text = "ELEGIDAS: ",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
             )
         }
 
