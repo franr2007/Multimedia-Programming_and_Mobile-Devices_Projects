@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -170,12 +170,14 @@ fun ElegidaCard(nombreActivitat: String){
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background
         ),
-        modifier = Modifier.padding(start = 5.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 5.dp, end = 5.dp)
     ) {
         Text(
             text = nombreActivitat,
             modifier = Modifier
-                .padding(start = 5.dp, end = 5.dp)
+                .padding(5.dp)
         )
     }
 }
@@ -184,13 +186,15 @@ fun ElegidaCard(nombreActivitat: String){
 fun TodasElegidas(actividadesElegidas: List<Activitat>){
     Card(
         modifier = Modifier
-            .height(50.dp)
+            .height(150.dp)
             .fillMaxWidth(),
     ) {
-        LazyRow(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        LazyColumn(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(actividadesElegidas) {activitad ->
                 ElegidaCard(activitad.nom)
