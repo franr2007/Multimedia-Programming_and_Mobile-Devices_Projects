@@ -20,38 +20,35 @@ fun ActividadCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
+        modifier = modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            // Nombre de la actividad.
+            //nombre
             Text(
                 text = actividad.nombre,
                 style = MaterialTheme.typography.titleLarge
             )
 
-            // Categoría y dificultad.
+            //categoria y dificultad
             Text(
                 text = "${actividad.categoria} · ${actividad.dificultad}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            // Descripción recibida del objeto.
+            //descripcion
             Text(
                 text = actividad.descripcion,
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            // Se muestra el precio o la indicación de gratuidad.
+            // precio o info de si es gratuita
             if (actividad.gratuita) {
                 Text(
-                    text = "Gratuïta",
+                    text = "Gratuita",
                     style = MaterialTheme.typography.titleMedium
                 )
             } else {
@@ -65,10 +62,10 @@ fun ActividadCard(
                 )
             }
 
-            // Solo mostramos esta indicación cuando incluye material.
+            // info material
             if (actividad.materialIncluido) {
                 Text(
-                    text = "Material inclòs",
+                    text = "Material incluido",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
