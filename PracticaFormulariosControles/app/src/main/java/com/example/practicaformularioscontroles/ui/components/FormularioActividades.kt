@@ -54,11 +54,11 @@ fun FormularioActividad(
 
     //validaciones
 
-    val formatoPrecio = precio.toDoubleOrNull()
+    val doublePrecio = precio.toDoubleOrNull()
     val validarNombre = nombre.trim().length in 3..30
     val validarDescripcion = descripcion.trim().length in 10..120
     val validarCategoria = categoria.isNotBlank()
-    val validarPrecio = gratuita || (formatoPrecio != null && formatoPrecio > 0.0)
+    val validarPrecio = gratuita || (doublePrecio != null && doublePrecio > 0.0)
 
     // validacion que recoge todas las validaciones, solo se podra guardar si esta da true
     val validarFormulario = validarNombre &&
@@ -67,10 +67,8 @@ fun FormularioActividad(
             validarPrecio
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
         Text(
@@ -153,7 +151,11 @@ fun FormularioActividad(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Actividad Gratuita:")
+            Text(
+                text = "Actividad Gratuita:",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
 
             Switch(
                 checked = gratuita,
@@ -171,7 +173,7 @@ fun FormularioActividad(
         OutlinedTextField(
             value = precio,
             onValueChange = { nuevoPrecio ->
-                precio = nuevoPrecio.replace(',', '.')
+                precio = nuevoPrecio.replace(",",".")
             },
             label = { Text("Precio:") },
             modifier = Modifier.fillMaxWidth(),
@@ -182,7 +184,7 @@ fun FormularioActividad(
                 if (gratuita) {
                     Text("Actividad gratuita: 0,00 €")
                 } else if (intentarGuardar && !validarPrecio) {
-                    Text("Introduce un precio numerico superior a 0")
+                    Text("Introduce un precio numerico superior a 0,00 €")
                 }
             }
         )
@@ -193,7 +195,7 @@ fun FormularioActividad(
                 intentarGuardar = true
 
                 if (validarFormulario) {
-                    val novaActivitat = Actividad(
+                    val nuevaActividad = Actividad(
                         id = 0,
                         nombre = nombre.trim(),
                         descripcion = descripcion.trim(),
@@ -201,10 +203,10 @@ fun FormularioActividad(
                         dificultad = dificultad,
                         materialIncluido = materialIncluido,
                         gratuita = gratuita,
-                        precio = if (gratuita) 0.0 else formatoPrecio!!
+                        precio = if (gratuita) 0.0 else doublePrecio!!
                     )
 
-                    onGuardar(novaActivitat)
+                    onGuardar(nuevaActividad)
 
                     //Se reinician todos los estados
                     nombre = ""
@@ -245,10 +247,11 @@ fun SelectorCategoria(
     Column {
         Text(
             text = "Categoria: ",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         //Boton que abre el menu
         Button(
@@ -310,7 +313,8 @@ fun SelectorDificultad(
     Column {
         Text(
             text = "Dificultad:",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
         )
 
         dificultades.forEach { opcion ->
@@ -320,7 +324,7 @@ fun SelectorDificultad(
                     .clickable {
                         ondificultadeseleccionada(opcion)
                     }
-                    .padding(vertical = 2.dp),
+                    .padding(vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
